@@ -31,6 +31,38 @@ fn build_scores_table(results: &str) -> HashMap<&str, TeamScores> {
         // Keep in mind that goals scored by team 1 will be the number of goals
         // conceded by team 2. Similarly, goals scored by team 2 will be the
         // number of goals conceded by team 1.
+        scores
+            .entry(team_1_name)
+            .and_modify(|it_scores| {
+                it_scores.goals_scored += team_1_score;
+                it_scores.goals_conceded += team_2_score;
+            })
+            .or_insert(TeamScores {
+                goals_scored: team_1_score,
+                goals_conceded: team_2_score,
+            });
+        
+        scores.entry(team_2_name)
+            .and_modify(|it_scores| {
+                it_scores.goals_scored += team_2_score;
+                it_scores.goals_conceded += team_1_score;
+            })
+            .or_insert(TeamScores {
+                goals_scored: team_2_score,
+                goals_conceded: team_1_score,
+            });
+        
+    //        let update_scores = |team_name: &str, new_scores: TeamScores| {
+        //        scores.entry(team_name)
+        //            .and_modify(|it_scores| {
+        //                it_scores.goals_scored += new_scores.goals_scored;
+        //                it_scores.goals_conceded += new_scores.goals_conceded;
+        //            })
+        //            .or_insert(new_scores);
+        //    };
+        // 
+        //    update_scores(team_1_name, team_1_scores);
+        //    update_scores(team_2_name, team_2_scores);
     }
 
     scores
