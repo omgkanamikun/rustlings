@@ -1,6 +1,6 @@
 // We're collecting different fruits to bake a delicious fruit cake. For this,
 // we have a basket, which we'll represent in the form of a hash map. The key
-// represents the name of each fruit we collect and the value represents how
+// represents the name of each fruit we collect, and the value represents how
 // many of that particular fruit we have collected. Three types of fruits -
 // Apple (4), Mango (2) and Lychee (5) are already in the basket hash map. You
 // must add fruit to the basket so that there is at least one of each kind and
@@ -29,9 +29,7 @@ fn fruit_basket(basket: &mut HashMap<Fruit, u32>) {
     ];
 
     for fruit in fruit_kinds {
-        // TODO: Insert new fruits if they are not already present in the
-        // basket. Note that you are not allowed to put any type of fruit that's
-        // already present!
+        basket.entry(fruit).or_insert(7);
     }
 }
 

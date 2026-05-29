@@ -8,24 +8,27 @@ enum DivisionError {
     NotDivisible,
 }
 
-// TODO: Calculate `a` divided by `b` if `a` is evenly divisible by `b`.
-// Otherwise, return a suitable error.
 fn divide(a: i64, b: i64) -> Result<i64, DivisionError> {
-    todo!();
+    if b == 0 {
+        return Err(DivisionError::DivideByZero);
+    }
+
+    let result = a.checked_div(b).ok_or(DivisionError::IntegerOverflow)?;
+
+    match a % b {
+        0 => Ok(result),
+        _ => Err(DivisionError::NotDivisible),
+    }
 }
 
-// TODO: Add the correct return type and complete the function body.
-// Desired output: `Ok([1, 11, 1426, 3])`
-fn result_with_list() {
+fn result_with_list() -> Result<Vec<i64>, DivisionError> {
     let numbers = [27, 297, 38502, 81];
-    let division_results = numbers.into_iter().map(|n| divide(n, 27));
+    numbers.into_iter().map(|n| divide(n, 27)).collect()
 }
 
-// TODO: Add the correct return type and complete the function body.
-// Desired output: `[Ok(1), Ok(11), Ok(1426), Ok(3)]`
-fn list_of_results() {
+fn list_of_results() -> Vec<Result<i64, DivisionError>> {
     let numbers = [27, 297, 38502, 81];
-    let division_results = numbers.into_iter().map(|n| divide(n, 27));
+    numbers.into_iter().map(|n| divide(n, 27)).collect()
 }
 
 fn main() {
@@ -71,5 +74,24 @@ mod tests {
     #[test]
     fn test_list_of_results() {
         assert_eq!(list_of_results(), [Ok(1), Ok(11), Ok(1426), Ok(3)]);
+    }
+
+    #[test]
+    fn test_result_with_list_fail() {
+        let numbers = [27, 297, 38502, 82];
+        let result: Result<Vec<i64>, DivisionError> =
+            numbers.into_iter().map(|n| divide(n, 27)).collect();
+        assert_eq!(result, Err(DivisionError::NotDivisible));
+    }
+
+    #[test]
+    fn test_list_of_results_with_errors() {
+        let numbers = [27, 54, 100, 81];
+        let results: Vec<Result<i64, DivisionError>> =
+            numbers.into_iter().map(|n| divide(n, 27)).collect();
+        assert_eq!(
+            results,
+            [Ok(1), Ok(2), Err(DivisionError::NotDivisible), Ok(3)]
+        );
     }
 }
